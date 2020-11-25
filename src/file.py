@@ -11,10 +11,10 @@ class File:
                 os.mkdir('./data')
             self.ruleData = []
         try:
-            self.ruleData = pickle.load(read) #['From-Dir', {'key' : 'keyword', 'value' : 'Hello', 'todir' : 'Directory'}, ]
+            self.ruleData = pickle.load(read) #['From-Dir', [{'id': 'name or id', 'key' : 'keyword', 'value' : 'Hello', 'todir' : 'Directory'}, ]]
             read.close()
         except:
-            self.ruledata = []
+            pass
 
     def writeSortRule(self, fromDir, data): # fromDir은 정렬대상폴더, data는 list형태의 dictionary 모음
         read = open(self.file_name, 'wb')
@@ -23,10 +23,20 @@ class File:
         pickle.dump(in_file, read)
         read.close()
 
+    #def modifyRule(self, mod_rule):
+    #    if len(self.ruleData[1]) == len(mod_rule):
+    #        for i in range(len(mod_rule)):
+    #            if self.ruleData[i+1] != mod_rule[i]:
+    #                self.ruleData[i+1] = mod_rule[i]
+
 
 if __name__ == '__main__':
     file = File()
     print(file.ruleData)
-    file.writeSortRule('Donwload', {'key': 'keyword', 'value' : 'Hello', 'todir' : 'Directory'})
+    file.writeSortRule('C:/Users/minso/Downloads/', [{'key': 'keyword', 'value' : 'Hello', 'todir' : 'C:/Users/minso/Desktop/Directory/'}, {'key': 'keyword', 'value' : 'World', 'todir' : 'C:/Users/minso/Desktop/Directory1/'}])
+    file = File()
+    print(file.ruleData)
+    #file.modifyRule([{'key': 'keyword', 'value' : 'welCome', 'todir' : 'Directory'}, {'key': 'pattern', 'value' : 'World', 'todir' : 'Directory'}])
+
     file = File()
     print(file.ruleData)
