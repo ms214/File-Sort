@@ -93,8 +93,8 @@ class mainWindow(QWidget):
         key = button.text()
 
         if key == '규칙 추가':
-            pass제
-        elif key == '규칙 삭':
+            pass
+        elif key == '규칙 삭제':
             pass
         elif key == '규칙 수정':
             pass
