@@ -4,10 +4,10 @@ import re
 import platform
 
 # 선택한 규칙과 선택하지 않은 규칙을 어떻게 분류하지?
+# checked_idx.dat -> 아이디 인덱스 자체를 저장
 
 class Sort:
-    def __init__(self, id, rule, from_dir, toDir):
-        self.ids = id
+    def __init__(self, rule, from_dir, toDir):
         self.rule = rule # [[{rule1}], [{rule2}, {rule3}], [{rule4}, {rule5}, {rule6}]]
         self.from_dir = from_dir
         self.toDir = toDir

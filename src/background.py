@@ -12,9 +12,16 @@ class Background:
         self.prefile = [f for f in os.listdir(path) if os.path.isfile(path+f)] # 프로그램 시작 시 파일 리스트
         try:
             rf = open('rule.dat', 'rb')
-            self.names = pickle.load(rf)
-            self.rules = pickle.load(rf) # [[{rule1}], [{rule2}, {rule3}], [{rule4}, {rule5}, {rule6}]]
-            self.toDir = pickle.load(rf)
+            ck_file = open('checked_idx.dat', 'rb') # 선택된 규칙 index 저장 파일
+            allnames = pickle.load(rf)
+            self.idx = pickle.load(ck_file)
+            allrules = pickle.load(rf) # [[{rule1}], [{rule2}, {rule3}], [{rule4}, {rule5}, {rule6}]]
+            self.rules = []
+            alltoDir = pickle.load(rf)
+            self.toDir = []
+            for i in self.idx:
+                self.rules.append(allrules[i])
+                self.toDir.append(alltoDir[i])
         except:
             pass
 
@@ -31,7 +38,7 @@ class Background:
             return False # 변경 사항 없음
 
     def bg_move(self):
-        r_sort = Sort(self.names, self.rules, self.from_dir, self.toDir)
+        r_sort = Sort(self.rules, self.from_dir, self.toDir)
         r_sort.ckfile()
         r_sort.move()
 

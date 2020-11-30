@@ -5,21 +5,20 @@ import pickle, os
 
 class File:
     def __init__(self):
-        self.file_name = './data/general.dat'
+        self.file_name = 'general.dat'
         self.ruleData = []
+        global read
         try:
             read = open(self.file_name, 'rb')
         except FileNotFoundError as fN:
-            if 'data' not in os.listdir():
-                os.mkdir('./data')
             self.ruleData = []
         try:
-            self.ruleData = pickle.load(read) #['From-Dir', Background]
+            self.ruleData = pickle.load(read) #['From-Dir', Background, [select-ids]]
             read.close()
         except:
             pass
 
-    def writeGeneralRule(self, fromDir, background): # fromDir은 정렬대상폴더, background는 bool 형태(백그라운드 동작 여부 설정)
+    def writeGeneralRule(self, fromDir, background): # fromDir은 정렬대상폴더, background는 bool 형태(백그라운드 동작 여부 설정), sel_ids는 선택된 규칙 아이디를 리스트 형태로 받음
         read = open(self.file_name, 'wb')
         in_file = [fromDir]
         in_file.append(background) # background는 true or false
@@ -38,8 +37,8 @@ class File:
             pass
 
 
-if __name__ == '__main__':
+if __name__ == '__main__': # 테스트용
     file = File()
     print(file.ruleData)
-    file.writeGeneralRule('C:/Users/minso/Downloads/', True)
+    file.writeGeneralRule('C:/Users/minso/Downloads/', True, ['a'])
     print(file.getGeneralRule())
