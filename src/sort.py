@@ -1,7 +1,7 @@
 import os
 import shutil
 import re
-import platform
+import subprocess
 
 # 선택한 규칙과 선택하지 않은 규칙을 어떻게 분류하지?
 # checked_idx.dat -> 아이디 인덱스 자체를 저장
@@ -36,13 +36,24 @@ class Sort:
                     if r['key'] == 'titleKey': # key가 keyword
                         if r['value'].lower() in f.split('.')[0].lower(): # 대소문자 구별 없게 하기 위해서 upper()함수 사용
                             self.s_file.append((f, self.toDir[r1]))
-                    elif r['key'] == 'pattern': # key가 pattern 일때
+                    elif r['key'] == 'titlePattern': # key가 pattern 일때
                         p = re.compile(r['value'])
                         if p.match(f.split('.')[0]) != None: # 정규식사용, 파일명이 정규식과 맞지 않으면 None 리턴
                             self.s_file.append((f, self.toDir[r1]))
-                    elif r['key'] == 'extension': # key가 확장자일때
+                    elif r['key'] == 'fileFormat': # key가 확장자일때
                         if r['value'] == f.split('.')[1]:
                             self.s_file.append((f, self.toDir[r1]))
+                    elif r['key'] == 'DLsite': # key가 다운로드 사이트일때
+                        cmd = 'Get-Content "'+self.from_dir+'/'+f+'" -Stream Zone.Identifier'
+                        res = subprocess.check_output('C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe '+cmd, shell=True, universal_newlines=True)
+                        if len(res) > 3:
+                            res = res.split('\n')[3]
+                            res = res.split('=', maxsplit=1)[2]
+                            if res == r['value']:
+                                self.s_file.append((f, self.toDir[r1]))
+
+
+
 
 #테스트를 위한 코드
 if __name__ == "__main__":

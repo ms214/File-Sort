@@ -40,5 +40,5 @@ class File:
 if __name__ == '__main__': # 테스트용
     file = File()
     print(file.ruleData)
-    file.writeGeneralRule('C:/Users/minso/Downloads/', True, ['a'])
+    file.writeGeneralRule('C:/', True)
     print(file.getGeneralRule())
