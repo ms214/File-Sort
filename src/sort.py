@@ -2,16 +2,27 @@ import os
 import shutil
 import re
 import subprocess
+import pickle
 
 # 선택한 규칙과 선택하지 않은 규칙을 어떻게 분류하지?
 # checked_idx.dat -> 아이디 인덱스 자체를 저장
 
 class Sort:
-    def __init__(self, rule, from_dir, toDir):
-        self.rule = rule # [[{rule1}], [{rule2}, {rule3}], [{rule4}, {rule5}, {rule6}]]
-        self.from_dir = from_dir
-        self.toDir = toDir
-        self.files = [f for f in os.listdir(from_dir) if os.path.isfile(from_dir+f)] # 해당 디렉토리에 있는 모든 파일 목록 저장
+    def __init__(self):
+        f = open('rule.dat', 'rb')
+        self.rule = []
+        self.toDir = []
+        rules = pickle.load(f) # [[{rule1}], [{rule2}, {rule3}], [{rule4}, {rule5}, {rule6}]]
+        self.from_dir = pickle.load(f)
+        toDirs = pickle.load(f)
+        f.close()
+        f = open('checked_idx.dat', 'rb')
+        selNums = pickle.load(f)
+        for i in selNums:
+            self.rule.append(rules[i])
+            self.toDir.append(toDirs[i])
+        f.close()
+        self.files = [f for f in os.listdir(self.from_dir) if os.path.isfile(self.from_dir+f)] # 해당 디렉토리에 있는 모든 파일 목록 저장
         self.s_file = [] # 이동 대상 파일 각요소는 (파일명.확장자, 이동위치) 형식
 
     def move(self):
