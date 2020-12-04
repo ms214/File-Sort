@@ -6,8 +6,11 @@ from PyQt5.QtCore import Qt
 import tkinter
 from tkinter import filedialog
 
+# 입력 금지  \ / : * ? " < > |
 
-class Rule_modify(QDialog):
+
+
+class Rule_add(QDialog):
     def __init__(self):
         super().__init__()
         self.initUI()
@@ -17,9 +20,10 @@ class Rule_modify(QDialog):
         self.id = 1
         self.todir = ""
 
+
     def initUI(self):
         self.setGeometry(300, 300, 500, 400)
-        self.setWindowTitle('rule Modify')
+        self.setWindowTitle('rule Add')
 
         ruleNameLab = QLabel("규칙 이름: ")
         self.ruleNameLine = QLineEdit()
@@ -69,6 +73,7 @@ class Rule_modify(QDialog):
 
         self.SELRule = QLabel("선택한 규칙")
         self.SELView = QTextEdit()
+        self.SELView.setReadOnly(True)
 
         self.SELRuleV.addWidget(self.SELRule)
         self.SELRuleV.addWidget(self.SELView)
@@ -133,22 +138,20 @@ class Rule_modify(QDialog):
         self.savedTodir = pickle.load(f)
         f.close()
 
-        f = open('rule.dat', 'wb')
 
+        f = open('rule.dat', 'wb')
         if self.ruleNameLine.text() != "":
-            self.savedId[self.idx] = self.ruleNameLine.text()
+            self.id = self.ruleNameLine.text()
+            self.savedId.append(self.id)
             pickle.dump(self.savedId, f)
         else:
-            self.savedId[self.idx] = self.id
+            self.savedId.append(self.id)
             pickle.dump(self.savedId, f)
             self.id += 1
-
-        self.savedSelectRule[self.idx] = self.selectRule
+        self.savedSelectRule.append(self.selectRule)
         pickle.dump(self.savedSelectRule, f)
-
-        self.savedTodir[self.idx] = self.todir
+        self.savedTodir.append(self.todir)
         pickle.dump(self.savedTodir, f)
-
         f.close()
         self.close()
         print("저장")
@@ -279,34 +282,8 @@ class Rule_modify(QDialog):
             self.fileFormatChk.setEnabled(True)
             self.DLsite.setEnabled(True)
 
-    def showModal(self, name):
-
-        f = open('rule.dat', 'rb')
-        self.nameList = pickle.load(f)
-        self.ruleList = pickle.load(f)
-        self.dirList = pickle.load(f)
-        f.close()
-
-        self.idx = self.nameList.index(name)
-
-        self.ruleNameLine.setText(name)
-        K = ''
-        for i in range(len(self.ruleList[self.idx])):
-            for key, value in self.ruleList[self.idx][i].items():
-                if key == 'key':
-                    if value == 'fileFormat':
-                        self.SELView.append("파일 확장자: .")
-                        k = 'fileFormat'
-                    if value == 'titleKey':
-                        self.SELView.append("제목에 ")
-                        k = 'titleKey'
-                if k == 'fileFormat' and key == 'value':
-                    self.SELView.append("파일 확장자: ."+ value)
-                if k == 'titleKey' and key == 'value':
-                    self.SELView.append(value + "(이)가 있는 파일")
-        self.locLine.setText(self.dirList[self.idx])
+    def showModal(self):
         return super().exec_()
-
 
 
 
@@ -329,7 +306,7 @@ if __name__ == '__main__':
     sys.excepthook = my_exception_hook
 
     app = QApplication(sys.argv)
-    ex = Rule()
+    ex = Rule_add()
     ex.show()
     sys.exit(app.exec_())
 
