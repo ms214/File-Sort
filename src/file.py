@@ -13,7 +13,7 @@ class File:
         except FileNotFoundError as fN:
             self.ruleData = []
         try:
-            self.ruleData = pickle.load(read) #['From-Dir', Background, [select-ids]]
+            self.ruleData = pickle.load(read) #['From-Dir', Background]
             read.close()
         except:
             pass
