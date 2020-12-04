@@ -22,6 +22,8 @@ class Background:
             for i in self.idx:
                 self.rules.append(allrules[i])
                 self.toDir.append(alltoDir[i])
+            rf.close()
+            ck_file.close()
         except:
             pass
 
@@ -41,12 +43,6 @@ class Background:
         r_sort = Sort(self.rules, self.from_dir, self.toDir)
         r_sort.ckfile()
         r_sort.move()
-
-    def bg_kill(self): # mainWindow 에서 자동분류 체크박스를 해제하였으면 실행 or 이 코드를 mainWindow로 가져가서 실행
-        try:
-            os.system('taskkill /im pythonw.exe /F') # 윈도우 cmd 명령어
-        except:
-            pass
 
 
 
