@@ -11,7 +11,7 @@ class File:
         try:
             read = open(self.file_name, 'rb')
         except FileNotFoundError as fN:
-            self.ruleData = []
+            self.ruleData = ['', False]
         try:
             self.ruleData = pickle.load(read) #['From-Dir', Background]
             read.close()
@@ -26,15 +26,7 @@ class File:
         read.close()
 
     def getGeneralRule(self):
-        try:
-            read = open(self.file_name, 'rb')
-        except FileNotFoundError as fN:
-            pass
-
-        try:
-            return pickle.load(read)
-        except:
-            pass
+        return self.ruleData
 
 
 if __name__ == '__main__': # 테스트용
