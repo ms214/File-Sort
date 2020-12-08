@@ -1,14 +1,19 @@
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QWidget
-from PyQt5.QtWidgets import QTableWidget, QLabel, QLineEdit, QToolButton, QCheckBox
+from PyQt5.QtWidgets import QTableWidget, QLabel, QLineEdit, QToolButton, QCheckBox, QMessageBox
 from PyQt5.QtWidgets import QLayout, QGridLayout, QHBoxLayout, QVBoxLayout
 import pickle
 from rule_add import Rule_add
 from rule_modify import Rule_modify
 from file import File
 from sort import Sort
+
 import os
 import time
+import tkinter
+from tkinter import filedialog
+from multiprocessing import Process, Queue
+from threading import Thread
 
 os.system('chcp 65001')
 #os.system('START /B python background.py')
@@ -95,7 +100,7 @@ class mainWindow(QWidget):
         folderLayout.addWidget(self.display)
 
         # OK Button
-        self.okButton = Button('OK', self.buttonClicked)
+        self.okButton = Button('폴더찾기', self.buttonClicked)
         folderLayout.addWidget(self.okButton)
 
         # Layout
@@ -120,6 +125,12 @@ class mainWindow(QWidget):
                     self.ruleListCheckBox[i].toggle()
                 except:
                     pass
+        
+        #general.dat에 있는 데이터 정보 받아오기
+        gen = self.g_file.getGeneralRule()
+        if gen[1]:
+            self.checkBox.toggle()
+        self.display.setText(gen[0])
 
     def buttonClicked(self):
         button = self.sender()
@@ -210,32 +221,91 @@ class mainWindow(QWidget):
             pickle.dump(checked_item, f)
             f.close()
 
+            msgBox = QMessageBox()
+            msgBox.setWindowTitle('알림')
+            msgBox.setIcon(QMessageBox.Information)
+            msgBox.setText('저장 완료')
+            msgBox.setInformativeText('저장되었습니다.')
+            msgBox.setStandardButtons(QMessageBox.Ok)
+            msgBox.setDefaultButton(QMessageBox.Ok)
+            msgBox.exec_()
+
         elif key == '분류':
-            f_sort = Sort()
-            f_sort.ckfile()
-            f_sort.move()
+            msgBox = QMessageBox()
+            msgBox.setWindowTitle('경고')
+            msgBox.setIcon(QMessageBox.Critical)
+            msgBox.setText('경고')
+            msgBox.setInformativeText('분류 하시겠습니까?')
+            msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
+            msgBox.setDefaultButton(QMessageBox.Yes)
+            if msgBox.exec_() == QMessageBox.Yes:
+                f_sort = Sort()
+                f_sort.ckfile()
+                f_sort.move()
+                msgBox.setWindowTitle('알림')
+                msgBox.setIcon(QMessageBox.Information)
+                msgBox.setText('분류 완료')
+                msgBox.setInformativeText('완료되었습니다.')
+                msgBox.setStandardButtons(QMessageBox.Ok)
+                msgBox.setDefaultButton(QMessageBox.Ok)
+                msgBox.exec_()
+            else:
+                msgBox.setWindowTitle('알림')
+                msgBox.setIcon(QMessageBox.Information)
+                msgBox.setText('분류 취소')
+                msgBox.setInformativeText('취소되었습니다.')
+                msgBox.setStandardButtons(QMessageBox.Ok)
+                msgBox.setDefaultButton(QMessageBox.Ok)
+                msgBox.exec_()
+
+        elif key == '폴더찾기':
+            f = open('general.dat', 'rb')
+            original = pickle.load(f)
+            f.close()
+
+            # from rule_add.py
+            root = tkinter.Tk()
+            root.withdraw()
+            dir_path = filedialog.askdirectory(parent=root, initialdir="/", title='Please select a directory')
+            if dir_path[-1] == '/':
+                self.display.setText(dir_path)
+                original[0] = dir_path
+            elif len(dir_path) == 0:
+                dir_path = self.display.text()
+                self.display.setText(dir_path)
+                original[0] = dir_path
+            else:
+                self.display.setText(dir_path+'/')
+                original[0] = dir_path+'/'
+
+            f = open('general.dat', 'wb')
+            pickle.dump(original, f)
+            f.close()
 
         else:
             pass
 
     def checkBoxClicked(self):
-        sender = self.sender()
-
+        sender = self.sender().text()
         if self.checkBox.isChecked() == True: # 자동분류 체크박스 체크여부
-            print('checked')
-            time.sleep(1)
             if sender == '자동분류':
-                os.system('pythonw background.py')
-                self.g_file.writeGeneralRule(self.display.text(),True)
+                print('checked')
+                t1 = Process(target=stBack)
+                t1.start()
+                self.g_file.writeGeneralRule(self.display.text(), True)
         else:
-            print('not')
-            time.sleep(1)
             if sender == '자동분류':
-                os.system('taskkill /im pythonw.exe /F')  # 윈도우 cmd 명령어
+                print('not')
+                t1 = Process(target=stopBack)
+                t1.start()
+                t1.join()
                 self.g_file.writeGeneralRule(self.display.text(), False)
 
 
-
+def stBack():
+    os.system('pythonw background.py')
+def stopBack():
+    os.system('taskkill /im pythonw.exe /F')  # 윈도우 cmd 명령어
 
 if __name__ == '__main__':
 
