@@ -11,7 +11,7 @@ class File:
         try:
             read = open(self.file_name, 'rb')
         except FileNotFoundError as fN:
-            self.ruleData = ['', False]
+            self.ruleData = ['C:/', False]
         try:
             self.ruleData = pickle.load(read) #['From-Dir', Background]
             read.close()
