@@ -10,22 +10,6 @@ class Background:
     def __init__(self, path):
         self.from_dir = path
         self.prefile = [f for f in os.listdir(path) if os.path.isfile(path+f)] # 프로그램 시작 시 파일 리스트
-        try:
-            rf = open('rule.dat', 'rb')
-            ck_file = open('checked_idx.dat', 'rb') # 선택된 규칙 index 저장 파일
-            allnames = pickle.load(rf)
-            self.idx = pickle.load(ck_file)
-            allrules = pickle.load(rf) # [[{rule1}], [{rule2}, {rule3}], [{rule4}, {rule5}, {rule6}]]
-            self.rules = []
-            alltoDir = pickle.load(rf)
-            self.toDir = []
-            for i in self.idx:
-                self.rules.append(allrules[i])
-                self.toDir.append(alltoDir[i])
-            rf.close()
-            ck_file.close()
-        except:
-            pass
 
     def ckChange(self):
         self.nowfile = [f for f in os.listdir(self.from_dir) if os.path.isfile(self.from_dir+f)]
@@ -40,7 +24,7 @@ class Background:
             return False # 변경 사항 없음
 
     def bg_move(self):
-        r_sort = Sort(self.rules, self.from_dir, self.toDir)
+        r_sort = Sort()
         r_sort.ckfile()
         r_sort.move()
 
