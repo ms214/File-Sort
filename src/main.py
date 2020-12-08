@@ -135,6 +135,7 @@ class mainWindow(QWidget):
     def buttonClicked(self):
         button = self.sender()
         key = button.text()
+        msgBox = QMessageBox()
 
         if key == '규칙 추가':
             ruleAdd = Rule_add()
@@ -153,29 +154,46 @@ class mainWindow(QWidget):
                 self.ruletable.setCellWidget(i, 0, self.ruleListCheckBox[i])
 
         elif key == '규칙 삭제':
-            tr = False
-            for i in range(len(self.rule_name)):
-                if self.ruleListCheckBox[i].isChecked():
-                    print("삭제")
+            cnt = 0
+            msgBox.setWindowTitle('경고')
+            msgBox.setIcon(QMessageBox.Critical)
+            msgBox.setText('경고')
+            msgBox.setInformativeText('선택한 규칙을 삭제 하시겠습니까?')
+            msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
+            msgBox.setDefaultButton(QMessageBox.No)
+            if msgBox.exec_() == QMessageBox.Yes:
+                del_idx = []
+                for i in range(len(self.rule_name)):
+                    if self.ruleListCheckBox[i].isChecked():
+                        cnt += 1
+                        print("삭제")
+                        del_idx.append(i)
 
-                    f = open('rule.dat', 'rb')
-                    name = pickle.load(f)
-                    rule = pickle.load(f)
-                    dir = pickle.load(f)
-                    f.close()
-
-                    del name[i]
-                    del rule[i]
-                    del dir[i]
-                    tr = True
-
-                if tr:
+                f = open('rule.dat', 'rb')
+                name = pickle.load(f)
+                rule = pickle.load(f)
+                dir = pickle.load(f)
+                f.close()
+                if cnt == 0:
+                    msgBox.setWindowTitle('알림')
+                    msgBox.setIcon(QMessageBox.Information)
+                    msgBox.setText('삭제 실패')
+                    msgBox.setInformativeText('삭제할 규칙을 선택해 주세요')
+                    msgBox.setStandardButtons(QMessageBox.Ok)
+                    msgBox.setDefaultButton(QMessageBox.Ok)
+                    msgBox.exec_()
+                else:
+                    for i in range(len(del_idx)):
+                        del name[i]
+                        del rule[i]
+                        del dir[i]
+                        for j in range(len(del_idx)):
+                            del_idx[j] -= 1
                     f = open('rule.dat', 'wb')
-                    name = pickle.dump(name, f)
-                    rule = pickle.dump(rule, f)
-                    dir = pickle.dump(dir, f)
+                    pickle.dump(name, f)
+                    pickle.dump(rule, f)
+                    pickle.dump(dir, f)
                     f.close()
-                    tr = False
 
             f = open('rule.dat', 'rb')
             self.rule_name = pickle.load(f)
@@ -190,29 +208,38 @@ class mainWindow(QWidget):
                 self.ruletable.setCellWidget(i, 0, self.ruleListCheckBox[i])
 
         elif key == '규칙 수정':
+            cnt = 0
             for i in range(len(self.rule_name)):
                 if self.ruleListCheckBox[i].isChecked():
+                    cnt += 1
                     ruleModify = Rule_modify()
                     ruleModify.show()
                     ruleModify.showModal(self.ruleListCheckBox[i].text())
                     f = open('rule.dat', 'rb')
                     self.rule_name = pickle.load(f)
-                    self.ruletable.setRowCount(len(self.rule_name))
                     f.close()
-                    self.ruleListCheckBox = [x for x in range(len(self.rule_name))]
-                    for i in range(len(self.rule_name)):
-                        self.ruleListCheckBox[i] = CheckBox(self.rule_name[i], self.checkBoxClicked)
+            self.ruletable.setRowCount(len(self.rule_name))
+            self.ruleListCheckBox = [x for x in range(len(self.rule_name))]
+            for i in range(len(self.rule_name)):
+                self.ruleListCheckBox[i] = CheckBox(self.rule_name[i], self.checkBoxClicked)
 
-                    for i in range(len(self.rule_name)):
-                        self.ruleListCheckBox[i] = CheckBox(self.rule_name[i], self.checkBoxClicked)
-                    for i in range(len(self.ruleListCheckBox)):
-                        self.ruletable.setCellWidget(i, 0, self.ruleListCheckBox[i])
-                    self.update()
+            for i in range(len(self.rule_name)):
+                self.ruleListCheckBox[i] = CheckBox(self.rule_name[i], self.checkBoxClicked)
+            for i in range(len(self.ruleListCheckBox)):
+                self.ruletable.setCellWidget(i, 0, self.ruleListCheckBox[i])
+
+            if cnt == 0:
+                msgBox.setWindowTitle('알림')
+                msgBox.setIcon(QMessageBox.Information)
+                msgBox.setText('수정 실패')
+                msgBox.setInformativeText('규칙을 선택해 주세요')
+                msgBox.setStandardButtons(QMessageBox.Ok)
+                msgBox.setDefaultButton(QMessageBox.Ok)
+                msgBox.exec_()
 
 
             pass
         elif key == '결정':
-            pass
             checked_item = []
             for i in range(len(self.rule_name)):
                 if self.ruleListCheckBox[i].isChecked():
@@ -220,8 +247,6 @@ class mainWindow(QWidget):
             f = open('checked_idx.dat', 'wb')
             pickle.dump(checked_item, f)
             f.close()
-
-            msgBox = QMessageBox()
             msgBox.setWindowTitle('알림')
             msgBox.setIcon(QMessageBox.Information)
             msgBox.setText('저장 완료')
@@ -231,7 +256,6 @@ class mainWindow(QWidget):
             msgBox.exec_()
 
         elif key == '분류':
-            msgBox = QMessageBox()
             msgBox.setWindowTitle('경고')
             msgBox.setIcon(QMessageBox.Critical)
             msgBox.setText('경고')
@@ -246,14 +270,6 @@ class mainWindow(QWidget):
                 msgBox.setIcon(QMessageBox.Information)
                 msgBox.setText('분류 완료')
                 msgBox.setInformativeText('완료되었습니다.')
-                msgBox.setStandardButtons(QMessageBox.Ok)
-                msgBox.setDefaultButton(QMessageBox.Ok)
-                msgBox.exec_()
-            else:
-                msgBox.setWindowTitle('알림')
-                msgBox.setIcon(QMessageBox.Information)
-                msgBox.setText('분류 취소')
-                msgBox.setInformativeText('취소되었습니다.')
                 msgBox.setStandardButtons(QMessageBox.Ok)
                 msgBox.setDefaultButton(QMessageBox.Ok)
                 msgBox.exec_()
@@ -290,7 +306,7 @@ class mainWindow(QWidget):
         if self.checkBox.isChecked() == True: # 자동분류 체크박스 체크여부
             if sender == '자동분류':
                 print('checked')
-                t1 = Process(target=stBack)
+                t1 = Process(target=stBack) # 멀티쓰레딩
                 t1.start()
                 self.g_file.writeGeneralRule(self.display.text(), True)
         else:
