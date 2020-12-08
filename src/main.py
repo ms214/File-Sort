@@ -9,11 +9,9 @@ from file import File
 from sort import Sort
 
 import os
-import time
 import tkinter
 from tkinter import filedialog
-from multiprocessing import Process, Queue
-from threading import Thread
+from multiprocessing import Process
 
 os.system('chcp 65001')
 #os.system('START /B python background.py')
@@ -326,6 +324,7 @@ def stopBack():
 if __name__ == '__main__':
 
     import sys
+    import platform
 
     def my_exception_hook(exctype, value, traceback):
         # Print the error and traceback
@@ -341,7 +340,8 @@ if __name__ == '__main__':
     # Set the exception hook to our wrapping function
     sys.excepthook = my_exception_hook
 
-    app = QApplication(sys.argv)
-    main = mainWindow()
-    main.show()
-    sys.exit(app.exec_())
+    if 'Windows' in platform.system(): # 실행환경이 윈도우일 때만 실행
+        app = QApplication(sys.argv)
+        main = mainWindow()
+        main.show()
+        sys.exit(app.exec_())
