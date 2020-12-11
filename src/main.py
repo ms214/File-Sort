@@ -151,6 +151,17 @@ class mainWindow(QWidget):
             for i in range(len(self.ruleListCheckBox)):
                 self.ruletable.setCellWidget(i, 0, self.ruleListCheckBox[i])
 
+            # 저장된 checked_box 불러오기
+            f = open('checked_idx.dat', 'rb')
+            checked_box = pickle.load(f)
+            f.close()
+            if len(checked_box) != 0:
+                for i in checked_box:
+                    try:
+                        self.ruleListCheckBox[i].toggle()
+                    except:
+                        pass
+
         elif key == '규칙 삭제':
             cnt = 0
             msgBox.setWindowTitle('경고')
@@ -167,6 +178,19 @@ class mainWindow(QWidget):
                         print("삭제")
                         del_idx.append(i)
 
+                f = open('checked_idx.dat', 'rb')
+                cked_idx = pickle.load(f)
+                f.close()
+                if del_idx in cked_idx: # del_idx는 삭제할 인덱스, cked_idx는 선택한 인덱스
+                    for i in del_idx:
+                        j = cked_idx.find(i)
+                        del cked_idx[j]
+
+                f = open('checked_idx.dat', 'wb')
+                pickle.dump(cked_idx, f)
+                f.close()
+
+
                 f = open('rule.dat', 'rb')
                 name = pickle.load(f)
                 rule = pickle.load(f)
@@ -181,7 +205,7 @@ class mainWindow(QWidget):
                     msgBox.setDefaultButton(QMessageBox.Ok)
                     msgBox.exec_()
                 else:
-                    for i in range(len(del_idx)):
+                    for i in del_idx:
                         del name[i]
                         del rule[i]
                         del dir[i]
@@ -205,6 +229,7 @@ class mainWindow(QWidget):
             for i in range(len(self.ruleListCheckBox)):
                 self.ruletable.setCellWidget(i, 0, self.ruleListCheckBox[i])
 
+
         elif key == '규칙 수정':
             cnt = 0
             for i in range(len(self.rule_name)):
@@ -225,6 +250,16 @@ class mainWindow(QWidget):
                 self.ruleListCheckBox[i] = CheckBox(self.rule_name[i], self.checkBoxClicked)
             for i in range(len(self.ruleListCheckBox)):
                 self.ruletable.setCellWidget(i, 0, self.ruleListCheckBox[i])
+
+            f = open('checked_idx.dat', 'rb')
+            checked_box = pickle.load(f)
+            f.close()
+            if len(checked_box) != 0:
+                for i in checked_box:
+                    try:
+                        self.ruleListCheckBox[i].toggle()
+                    except:
+                        pass
 
             if cnt == 0:
                 msgBox.setWindowTitle('알림')
