@@ -12,6 +12,7 @@ import os
 import tkinter
 from tkinter import filedialog
 from multiprocessing import Process
+import subprocess
 
 os.system('chcp 65001')
 #os.system('START /B python background.py')
@@ -352,7 +353,8 @@ class mainWindow(QWidget):
 
 
 def stBack():
-    os.system('pythonw background.py')
+    subprocess.Popen(['pythonw', 'background.py'])
+    #os.system('pythonw background.py')
 def stopBack():
     os.system('taskkill /im pythonw.exe /F')  # 윈도우 cmd 명령어
 
