@@ -1,4 +1,4 @@
-import pickle, os
+import pickle
 
 # from-dir이랑 background 유무 확인 정보만 저장하기
 # 나머지는 규칙 저장하는 코드는 유진이가 작성
