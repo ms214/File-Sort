@@ -24,6 +24,7 @@ class File:
         in_file.append(background) # background는 true or false
         pickle.dump(in_file, read)
         read.close()
+        self.ruledata = [fromDir, background]
 
     def getGeneralRule(self):
         return self.ruleData

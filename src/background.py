@@ -26,7 +26,11 @@ class Background:
     def bg_move(self):
         r_sort = Sort()
         r_sort.ckfile()
-        r_sort.move()
+        result = r_sort.move()
+        if result:
+            return True
+        else:
+            return False
 
 
 

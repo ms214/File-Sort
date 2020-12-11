@@ -9,25 +9,39 @@ import pickle
 
 class Sort:
     def __init__(self):
-        f = open('rule.dat', 'rb')
-        self.rule = []
-        self.toDir = []
-        ids = pickle.load(f)
-        rules = pickle.load(f) # [[{rule1}], [{rule2}, {rule3}], [{rule4}, {rule5}, {rule6}]]
-        toDirs = pickle.load(f)
-        f.close()
-        f = open('checked_idx.dat', 'rb')
-        selNums = pickle.load(f)
-        for i in selNums:
-            self.rule.append(rules[i])
-            self.toDir.append(toDirs[i])
-        f.close()
-        f = open('general.dat', 'rb')
-        loads = pickle.load(f)
-        self.from_dir = loads[0]
-        f.close()
-        self.files = [f for f in os.listdir(self.from_dir) if os.path.isfile(self.from_dir+f)] # 해당 디렉토리에 있는 모든 파일 목록 저장
-        self.s_file = [] # 이동 대상 파일 각요소는 (파일명.확장자, 이동위치) 형식
+        if self.openFile():
+            self.files = [f for f in os.listdir(self.from_dir) if os.path.isfile(self.from_dir+f)] # 해당 디렉토리에 있는 모든 파일 목록 저장
+            self.s_file = [] # 이동 대상 파일 각요소는 (파일명.확장자, 이동위치) 형식
+
+    def openFile(self):
+        try:
+            f = open('rule.dat', 'rb')
+            self.rule = []
+            self.toDir = []
+            ids = pickle.load(f)
+            rules = pickle.load(f) # [[{rule1}], [{rule2}, {rule3}], [{rule4}, {rule5}, {rule6}]]
+            toDirs = pickle.load(f)
+            f.close()
+        except:
+            return False
+        try:
+            f = open('checked_idx.dat', 'rb')
+            selNums = pickle.load(f)
+            for i in selNums:
+                self.rule.append(rules[i])
+                self.toDir.append(toDirs[i])
+            f.close()
+        except:
+            return False
+        try:
+            f = open('general.dat', 'rb')
+            loads = pickle.load(f)
+            self.from_dir = loads[0]
+            f.close()
+        except:
+            return False
+
+        return True
 
     def move(self):
         for i in self.s_file:
@@ -35,13 +49,15 @@ class Sort:
                 try:
                     shutil.move(self.from_dir+i[0], i[1]+i[0])
                 except:
-                    pass
+                    return False
             else:
                 os.mkdir(i[1])
                 try:
                     shutil.move(self.from_dir + i[0], i[1] + i[0])
                 except:
-                    pass
+                    return False
+        else:
+            return True
 
             
     def ckfile(self):
@@ -62,7 +78,7 @@ class Sort:
                         cmd = 'Get-Content "'+self.from_dir+'/'+f+'" -Stream Zone.Identifier'
                         res = subprocess.check_output('C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe '+cmd, shell=True, universal_newlines=True)
                         if len(res) > 3:
-                            res = res.split('\n')[3]
+                            res = res.split('\n')[2]
                             res = res.split('=', maxsplit=1)[2]
                             if res == r['value']:
                                 self.s_file.append((f, self.toDir[r1])) if self.toDir[r1][-1] == '/' else self.s_file.append((f, self.toDir[r1]+'/'))
