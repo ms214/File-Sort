@@ -49,10 +49,18 @@ class mainWindow(QWidget):
         self.ruletable.setHorizontalHeaderLabels(['규칙 목록'])
         self.ruletable.setColumnWidth(0, 410)
 
-        f = open('rule.dat', 'rb')
-        self.rule_name = pickle.load(f)
-        self.ruletable.setRowCount(len(self.rule_name))
-        f.close()
+        # rule.dat 파일 열기 & 예외처리
+        try:
+            f = open('rule.dat', 'rb')
+            self.rule_name = pickle.load(f)
+            self.ruletable.setRowCount(len(self.rule_name))
+            f.close()
+        except:
+            os.system('pythonw rule_init.py')
+            f = open('rule.dat', 'rb')
+            self.rule_name = pickle.load(f)
+            self.ruletable.setRowCount(len(self.rule_name))
+            f.close()
 
         self.g_file = File()
 
@@ -114,18 +122,23 @@ class mainWindow(QWidget):
 
         self.setWindowTitle("Download file Classification")
 
-        #저장된 checked_box 불러오기
-        f = open('checked_idx.dat', 'rb')
-        checked_box = pickle.load(f)
-        f.close()
-        if len(checked_box) != 0:
-            for i in checked_box:
-                try:
-                    self.ruleListCheckBox[i].toggle()
-                except:
-                    pass
+        # 저장된 checked_box 불러오기 & 예외 처리
+        try:
+            f = open('checked_idx.dat', 'rb')
+            checked_box = pickle.load(f)
+            f.close()
+            if len(checked_box) != 0:
+                for i in checked_box:
+                    try:
+                        self.ruleListCheckBox[i].toggle()
+                    except:
+                        pass
+        except:
+            r = open('checked_idx.dat', 'wb')
+            pickle.dump([], r)
+            r.close()
         
-        #general.dat에 있는 데이터 정보 받아오기
+        #general.dat에 자동분류 체크 여부 데이터 받아오기
         gen = self.g_file.getGeneralRule()
         if gen[1]:
             self.checkBox.toggle()
@@ -310,9 +323,8 @@ class mainWindow(QWidget):
                 msgBox.exec_()
 
         elif key == '폴더찾기':
-            f = open('general.dat', 'rb')
-            original = pickle.load(f)
-            f.close()
+            original = self.g_file.ruleData
+
 
             # from rule_add.py
             root = tkinter.Tk()
