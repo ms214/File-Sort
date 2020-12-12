@@ -233,12 +233,13 @@ class mainWindow(QWidget):
 
         elif key == '규칙 수정':
             cnt = 0
+
             for i in range(len(self.rule_name)):
                 if self.ruleListCheckBox[i].isChecked():
                     cnt += 1
                     ruleModify = Rule_modify()
                     ruleModify.show()
-                    ruleModify.showModal(self.ruleListCheckBox[i].text())
+                    ruleModify.showModal(i)
                     f = open('rule.dat', 'rb')
                     self.rule_name = pickle.load(f)
                     f.close()

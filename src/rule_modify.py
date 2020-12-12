@@ -47,7 +47,7 @@ class Rule_modify(Rule_UI):
         self.idx = idx
 
         self.ruleNameLine.setText(self.nameList[self.idx])
-        K = ''
+        k = ''
         for i in range(len(self.ruleList[self.idx])):
             for key, value in self.ruleList[self.idx][i].items():
                 if key == 'key':
