@@ -39,6 +39,5 @@ if __name__ == "__main__":
     r_file = File()
     bg = Background(r_file.ruleData[0])
     while True:
-        if bg.ckChange():
-            bg.bg_move()
-            # time.sleep(60) # 1분당 한번씩 확인
+        bg.bg_move()
+        time.sleep(60) # 1분당 한번씩 확인
