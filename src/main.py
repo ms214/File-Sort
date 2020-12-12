@@ -182,7 +182,7 @@ class mainWindow(QWidget):
             msgBox.setIcon(QMessageBox.Critical)
             msgBox.setText('경고')
             msgBox.setInformativeText('선택한 규칙을 삭제 하시겠습니까?')
-            msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
+            msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
             msgBox.setDefaultButton(QMessageBox.No)
             if msgBox.exec_() == QMessageBox.Yes:
                 del_idx = []
