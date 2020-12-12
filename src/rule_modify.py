@@ -7,7 +7,7 @@ from rule_UI import *
 class Rule_modify(Rule_UI):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle('rule Monify')
+        self.setWindowTitle('rule Modify')
 
     def saveBtnclicked(self):
         f = open('rule.dat', 'rb')
