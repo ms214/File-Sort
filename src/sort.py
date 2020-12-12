@@ -75,13 +75,16 @@ class Sort:
                         if r['value'] == f.split('.')[1]:
                             self.s_file.append((f, self.toDir[r1]))
                     elif r['key'] == 'DLsite': # key가 다운로드 사이트일때
-                        cmd = 'Get-Content "'+self.from_dir+'/'+f+'" -Stream Zone.Identifier'
-                        res = subprocess.check_output('C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe '+cmd, shell=True, universal_newlines=True)
-                        if len(res) > 3:
-                            res = res.split('\n')[2]
-                            res = res.split('=', maxsplit=1)[2]
-                            if res == r['value']:
-                                self.s_file.append((f, self.toDir[r1])) if self.toDir[r1][-1] == '/' else self.s_file.append((f, self.toDir[r1]+'/'))
+                        cmd = 'Get-Content "'+self.from_dir+f+'" -Stream Zone.Identifier'
+                        try:
+                            res = subprocess.check_output('C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe ' + cmd, shell=True, universal_newlines=True)
+                            if len(res) > 3:
+                                res = res.split('\n')[2]
+                                res = res.split('=', maxsplit=1)[1]
+                                if res == r['value']:
+                                    self.s_file.append((f, self.toDir[r1])) if self.toDir[r1][-1] == '/' else self.s_file.append((f, self.toDir[r1]+'/'))
+                        except:
+                            pass
 
 
 
