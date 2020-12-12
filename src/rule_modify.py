@@ -52,20 +52,21 @@ class Rule_modify(Rule_UI):
             for key, value in self.ruleList[self.idx][i].items():
                 if key == 'key':
                     if value == 'fileFormat':
-                        self.SELView.append("파일 확장자: .")
                         k = 'fileFormat'
                     if value == 'titleKey':
-                        self.SELView.append("제목에 ")
                         k = 'titleKey'
                     if value == 'DLsite':
-                        self.SELView.append("다운로드 링크에 ", end='')
                         k = 'DLsite'
+                    if value == 'titlePattern':
+                        k = 'titlePattern'
                 if k == 'fileFormat' and key == 'value':
                     self.SELView.append("파일 확장자: ."+ value)
                 if k == 'titleKey' and key == 'value':
-                    self.SELView.append(value + "(이)가 있는 파일")
+                    self.SELView.append("제목에 " + value + "(이)가 있는 파일")
                 if k == 'DLsite' and key == 'value':
-                    self.SELView.append(value + "(이)가 포함되어있는 파일")
+                    self.SELView.append("다운로드 링크에 " + value + "(이)가 포함되어있는 파일")
+                if k == 'titlePattern' and key == 'value':
+                    self.SELView.append("제목에  " + value + "(이)가 포함되어있는 파일")
 
         self.selectRule = self.ruleList[self.idx]
         self.locLine.setText(self.dirList[self.idx])

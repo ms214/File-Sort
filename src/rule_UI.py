@@ -281,7 +281,7 @@ class Rule_UI(QDialog):
         elif sender is self.titlePatternokBtn:
             titlePattern = self.titlePatternLine.text()
             self.selectRule.append({'key': 'titlePattern', 'value': titlePattern})
-            self.SELView.append("제목에" + titlePattern + "(이)가 포함되어있는 파일")
+            self.SELView.append("제목에 " + titlePattern + "(이)가 포함되어있는 파일")
             self.cancelBtnClicked("titlePatternokBtn")
 
 
