@@ -91,13 +91,10 @@ class Sort:
 
 #테스트를 위한 코드
 if __name__ == "__main__":
-    rules = [{'key': 'keyword', 'value':'hello', 'todir':'C:/Users/minso/Desktop/Directory/'}]
-    rules2 = [{'key': 'pattern', 'value':'^\d\d-\d\d ', 'todir':'C:/Users/minso/Desktop/Directory/'}]
-    from_dir = 'C:/Users/minso/Downloads/'
-    sortv = Sort(rules, from_dir)
+    sortv = Sort()
     sortv.ckfile()
     sortv.move()
-    sortv = Sort(rules2, from_dir)
+    sortv = Sort()
     sortv.ckfile()
     sortv.move()
 
