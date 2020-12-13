@@ -35,9 +35,11 @@ class Background:
 
 
 if __name__ == "__main__":
-    # 윈도우에서 실행시 pythonw background.py 형식으로 실행
+    # pythonw background.py 형식으로 실행
     r_file = File()
     bg = Background(r_file.ruleData[0])
+    bg.bg_move()
     while True:
-        bg.bg_move()
+        if bg.ckChange():
+            bg.bg_move()
         time.sleep(60) # 1분당 한번씩 확인
